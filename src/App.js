@@ -5,22 +5,33 @@ import Search from './components/Search'
 import Results from './components/Results'
 import Popup from './components/Popup'
 
+
 function App() {
   const [state, setState] = useState({
     s: "",
     results: [],
     selected: {}
   });
-  const apiurl = "http://www.omdbapi.com/?apikey=dfe6d885";
+
+  require('dotenv').config()
+  console.log(process.env)
+  const api_key = process.env.API_KEY;
+
+  const apiurl = `http://www.omdbapi.com/?apikey=${api_key};
 
   const search = (e) => {
     if (e.key === "Enter") {
       axios.get(apiurl + "&s=" + state.s).then(({ data }) => {
         let results = data.Search;
 
-        setState(prevState => {
-          return { ...prevState, results: results }
-        })
+        if(results) {
+          setState(prevState => {
+            return { ...prevState, results: results }
+          })
+        }
+        else {
+          alert('No such movie name')
+        }
       });
     }
   }
